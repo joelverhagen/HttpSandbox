@@ -86,9 +86,9 @@ namespace Knapcode.HttpSandbox
             }
             else
             {
-                if (lines < 1)
+                if (lines < 0)
                 {
-                    lines = 1;
+                    lines = 0;
                 }
             }
             output.Lines = lines;
