@@ -57,6 +57,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Properties\PublishProfiles\Azure.pubxml" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
