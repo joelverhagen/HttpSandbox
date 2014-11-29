@@ -28,7 +28,7 @@ namespace Knapcode.HttpSandbox
             string[] parameterLines = parameters.GetLines().ToArray();
             byte[][] lines = Enumerable.Empty<string>()
                 .Concat(parameterLines)
-                .Concat(Enumerable.Repeat(Line, parameters.Lines - parameterLines.Length))
+                .Concat(Enumerable.Repeat(Line, Math.Max(0, parameters.Lines - parameterLines.Length)))
                 .Take(parameters.Lines)
                 .Select(l => Encoding.UTF8.GetBytes(l + "\r\n"))
                 .ToArray();
