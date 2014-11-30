@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Zip.Compression;
@@ -11,11 +12,11 @@ using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
 namespace Knapcode.HttpSandbox
 {
-    public class HttpSandboxHandler : IHttpHandler
+    public class HttpSandboxHandler : HttpTaskAsyncHandler
     {
         private const string Line = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet. Pellentesque tincidunt ligula sed magna semper.";
 
-        public void ProcessRequest(HttpContext context)
+        public override async Task ProcessRequestAsync(HttpContext context)
         {
             // prepare the headers
             context.Response.Buffer = false;
@@ -49,10 +50,10 @@ namespace Knapcode.HttpSandbox
                         encodingStream.Write(lines[i], 0, lines[i].Length);
                         encodingStream.Flush();
 
-                        int newLength = (int) outputStream.Length - offset;
+                        int newLength = (int)outputStream.Length - offset;
                         var newLine = new byte[newLength];
                         Buffer.BlockCopy(outputStream.GetBuffer(), offset, newLine, 0, newLength);
-                        offset = (int) outputStream.Length;
+                        offset = (int)outputStream.Length;
 
                         lines[i] = newLine;
                     }
@@ -68,13 +69,13 @@ namespace Knapcode.HttpSandbox
             // write the lines
             foreach (var line in lines)
             {
-                responseStream.Write(line, 0, line.Length);
-                Thread.Sleep(parameters.Sleep);
-                responseStream.Flush();
+                await responseStream.WriteAsync(line, 0, line.Length);
+                await Task.Delay(parameters.Sleep);
+                await responseStream.FlushAsync();
             }
         }
 
-        public bool IsReusable
+        public override bool IsReusable
         {
             get { return false; }
         }
